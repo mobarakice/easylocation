@@ -1,18 +1,11 @@
 package com.mobarak.smartlocation.location;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -27,17 +20,17 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.mobarak.smartlocation.listener.OnLocationUpdatedListener;
-import com.mobarak.smartlocation.settings.LocationSettingsEnabler;
+import com.mobarak.smartlocation.listener.ILocationUpdatedListener;
+import com.mobarak.smartlocation.utility.LocationUtil;
 
 /**
  * Created by Mobarak on 25 August, 2019
+ *
  * @author Mobarak Hosen
  */
 public class SmartLocation {
 
     public static final int LOCATION_ENABLER_CODE = 101;
-    public static final int PERMISSIONS_REQUEST_LOCATION = 22;
     private static final String TAG = SmartLocation.class.getSimpleName();
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
@@ -45,16 +38,14 @@ public class SmartLocation {
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
     private LocationSettingsRequest locationSettingsRequest;
-    private OnLocationUpdatedListener listener;
+    private ILocationUpdatedListener listener;
     private Context context;
     private LocationSettingsRequest.Builder settingBuilder;
-    private boolean isContinues;
     private LocationParams locationParams;
 
     private SmartLocation(Builder builder) {
         this.context = builder.context;
         this.locationParams = builder.params;
-        this.isContinues = builder.isContinuous;
         this.listener = builder.listener;
 
     }
@@ -107,11 +98,11 @@ public class SmartLocation {
 
     public void onContinuousLocation() {
         if (context instanceof Activity) {
-            if (!isLocationPermitted(context)) {
-                checkLocationPermission((Activity) context);
+            if (!LocationUtil.isLocationPermitted(context)) {
+                LocationUtil.checkLocationPermission((Activity) context);
             }
-            if (!isLocationEnabled(context)) {
-                turnOnLocationService(context);
+            if (!LocationUtil.isLocationEnabled(context)) {
+                turnOnLocationService();
             }
         }
         this.mFusedLocationClient.requestLocationUpdates(this.locationRequest,
@@ -120,11 +111,11 @@ public class SmartLocation {
 
     public void onFixLocation() {
         if (context instanceof Activity) {
-            if (!isLocationPermitted(context)) {
-                checkLocationPermission((Activity) context);
+            if (!LocationUtil.isLocationPermitted(context)) {
+                LocationUtil.checkLocationPermission((Activity) context);
             }
-            if(!isLocationEnabled(context)){
-                turnOnLocationService(context);
+            if (!LocationUtil.isLocationEnabled(context)) {
+                turnOnLocationService();
             }
         }
         this.mFusedLocationClient.getLastLocation()
@@ -139,10 +130,6 @@ public class SmartLocation {
                 });
 
 
-    }
-
-    public LocationSettingsRequest getLocationSettingsRequest() {
-        return this.locationSettingsRequest;
     }
 
     public void stop() {
@@ -199,52 +186,12 @@ public class SmartLocation {
         }
     }
 
-    public boolean isLocationPermitted(Context context) {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
 
-    public boolean isLocationEnabled(Context context) {
+    public void turnOnLocationService() {
         try {
-            LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            enableLocationSettings();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static void turnOnLocationService(Context context) {
-        try {
-            LocationSettingsEnabler enabler = new LocationSettingsEnabler(context);
-            enabler.enableLocationSettings();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void checkLocationPermission(final Activity context) {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            }
-
-        } else {
-
-            // No explanation needed, we can request the permission.
-            ActivityCompat.requestPermissions(context,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    PERMISSIONS_REQUEST_LOCATION);
-
-
         }
     }
 
@@ -263,11 +210,11 @@ public class SmartLocation {
     }
 
     public interface IContinuous {
-        ICallback listener(OnLocationUpdatedListener listener);
+        ICallback listener(ILocationUpdatedListener listener);
     }
 
     public interface IFix {
-        ICallback listener(OnLocationUpdatedListener listener);
+        ICallback listener(ILocationUpdatedListener listener);
     }
 
     public interface ICallback {
@@ -278,7 +225,7 @@ public class SmartLocation {
 
         private Context context;
         private LocationParams params;
-        private OnLocationUpdatedListener listener;
+        private ILocationUpdatedListener listener;
         private boolean isContinuous;
 
         @Override
@@ -306,7 +253,7 @@ public class SmartLocation {
         }
 
         @Override
-        public ICallback listener(OnLocationUpdatedListener listener) {
+        public ICallback listener(ILocationUpdatedListener listener) {
             this.listener = listener;
             return this;
         }

@@ -7,12 +7,13 @@ import android.location.Location;
 import com.mobarak.smartlocation.location.SmartLocation;
 import com.mobarak.smartlocation.location.LocationAccuracy;
 import com.mobarak.smartlocation.location.LocationParams;
-import com.mobarak.smartlocation.listener.OnLocationUpdatedListener;
+import com.mobarak.smartlocation.listener.ILocationUpdatedListener;
 import com.mobarak.smartlocation.models.LocationInfo;
 
 
 /**
  * Created by Mobarak on 25 August, 2019
+ *
  * @author Mobarak Hosen
  */
 
@@ -34,7 +35,7 @@ public class LocationManager {
         return builder.build();
     }
 
-    public static SmartLocation getLastLocation(Context context, OnLocationUpdatedListener listener) {
+    public static SmartLocation getFixLocation(Context context, ILocationUpdatedListener listener) {
         return SmartLocation.builder()
                 .with(context)
                 .config(getLocationParams(TRACKING_INTERVAL, TRACKING_DISTANCE))
@@ -43,7 +44,9 @@ public class LocationManager {
                 .start();
     }
 
-    public static SmartLocation getSmartLocationWithInterval(Context context, OnLocationUpdatedListener listener) {
+    public static SmartLocation getContinuousLocationWithDefaultInterval(
+            Context context,
+            ILocationUpdatedListener listener) {
         return SmartLocation.builder()
                 .with(context)
                 .config(getLocationParams(TRACKING_INTERVAL, TRACKING_DISTANCE))
@@ -52,7 +55,11 @@ public class LocationManager {
                 .start();
     }
 
-    public static SmartLocation getSmartLocationWithInterval(Context context, long intervalInSecond, long distanceInMeter, OnLocationUpdatedListener listener) {
+    public static SmartLocation getContinuousLocationWithCustomInterval(
+            Context context,
+            long intervalInSecond,
+            long distanceInMeter,
+            ILocationUpdatedListener listener) {
         return SmartLocation.builder()
                 .with(context)
                 .config(getLocationParams(intervalInSecond, distanceInMeter))
@@ -70,12 +77,12 @@ public class LocationManager {
                     .setAccuracy((int) location.getAccuracy())
                     .setQuery_time(location.getTime())
                     .build();
-            PreferenceUtility.saveObjectToSharedPreference(context, LocationConstants.PREFERENCE_FILE, LocationConstants.CACHE_LOCATION_KEY, locationInfo);
+            PreferenceUtil.saveObjectToSharedPreference(context, locationInfo);
         }
 
     }
 
     public static LocationInfo getCachedLocation(Context context) {
-        return PreferenceUtility.getSavedObjectFromPreference(context, LocationConstants.PREFERENCE_FILE, LocationConstants.CACHE_LOCATION_KEY, LocationInfo.class);
+        return PreferenceUtil.getSavedObjectFromPreference(context, LocationInfo.class);
     }
 }
