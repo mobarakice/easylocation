@@ -1,5 +1,5 @@
-## smartlocation
-TO integrate smartlocation library, flow this simple steps.
+## continuouslocation
+TO integrate continuous location library, flow this simple steps.
 ## Step 1. Add the JitPack repository to your build file 
 Add it in your root build.gradle
 
@@ -17,7 +17,7 @@ dependencies {
   
  ## Step 3. Intialize SmartLocation in your activity
  public class MainActivity extends AppCompatActivity implements ILocationUpdatedListener {
-    private SmartLocation smartLocation;
+    private ContinuousLocation continuouslocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +33,15 @@ dependencies {
     @Override
     protected void onResume() {
         super.onResume();
-        smartLocation = LocationManager.getContinuousLocationWithDefaultInterval(this,
+        continuouslocation = LocationManager.getContinuousLocationWithDefaultInterval(this,
                 this::onLocationUpdated);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (smartLocation != null) {
-            smartLocation.stop();
+        if (continuouslocation != null) {
+            continuouslocation.stop();
         }
     }
 }
