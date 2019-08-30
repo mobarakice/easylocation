@@ -1,5 +1,5 @@
-## continuouslocation
-TO integrate continuous location library, flow this simple steps.
+## EasyLocation
+TO integrate easylocation library, flow this simple steps.
 ## Step 1. Add the JitPack repository to your build file 
 Add it in your root build.gradle
 
@@ -12,12 +12,12 @@ allprojects {
   
 ## Step 2. Add the dependency
 dependencies {
-	        implementation 'com.github.mobarakice:smartlocation:1.0.1'
+	        implementation 'com.github.mobarakice:easylocation:1.1.0'
 	}
   
  ## Step 3. Intialize SmartLocation in your activity
  public class MainActivity extends AppCompatActivity implements ILocationUpdatedListener {
-    private ContinuousLocation continuouslocation;
+    private EasyLocation easyLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +33,15 @@ dependencies {
     @Override
     protected void onResume() {
         super.onResume();
-        continuouslocation = LocationManager.getContinuousLocationWithDefaultInterval(this,
+        easyLocation = EasyLocationManager.getContinuousLocationWithDefaultInterval(this,
                 this::onLocationUpdated);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (continuouslocation != null) {
-            continuouslocation.stop();
+        if (easyLocation != null) {
+            easyLocation.stop();
         }
     }
 }
