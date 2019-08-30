@@ -8,16 +8,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.mobarak.smartlocation.listener.ILocationUpdatedListener;
-import com.mobarak.smartlocation.location.SmartLocation;
-import com.mobarak.smartlocation.utility.LocationManager;
+import com.mobarak.easylocation.listener.ILocationUpdatedListener;
+import com.mobarak.easylocation.location.EasyLocation;
+import com.mobarak.easylocation.utility.EasyLocationManager;
 
 public class MainActivity extends AppCompatActivity implements ILocationUpdatedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     TextView tvLocation;
     private Location location;
-    private SmartLocation smartLocation;
+    private EasyLocation easyLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +44,15 @@ public class MainActivity extends AppCompatActivity implements ILocationUpdatedL
     @Override
     protected void onResume() {
         super.onResume();
-        smartLocation = LocationManager.getContinuousLocationWithDefaultInterval(this,
+        easyLocation = EasyLocationManager.getContinuousLocationWithDefaultInterval(this,
                 this::onLocationUpdated);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (smartLocation != null) {
-            smartLocation.stop();
+        if (easyLocation != null) {
+            easyLocation.stop();
         }
     }
 }

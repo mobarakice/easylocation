@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/smartlocation/smartlocation.iml" filepath="$PROJECT_DIR$/smartlocation/smartlocation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/smartlocation-app.iml" filepath="$PROJECT_DIR$/smartlocation-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easylocation/easylocation.iml" filepath="$PROJECT_DIR$/easylocation/easylocation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easylocation-app.iml" filepath="$PROJECT_DIR$/easylocation-app.iml" />
     </modules>
   </component>
 </project>

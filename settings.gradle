@@ -1,2 +1,2 @@
-include ':app', ':smartlocation'
-rootProject.name='smartlocation-app'
+include ':app', ':easylocation'
+rootProject.name='easylocation-app'
