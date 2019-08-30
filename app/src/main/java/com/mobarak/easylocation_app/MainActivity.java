@@ -1,4 +1,4 @@
-package com.mobarak.smartlocation_app;
+package com.mobarak.easylocation_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;

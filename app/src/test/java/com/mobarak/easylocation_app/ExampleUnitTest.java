@@ -1,4 +1,4 @@
-package com.mobarak.smartlocation_app;
+package com.mobarak.easylocation_app;
 
 import org.junit.Test;
 
